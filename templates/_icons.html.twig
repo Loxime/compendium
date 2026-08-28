@@ -1,0 +1,11 @@
+{% macro outline(name, className = 'menu-icon') %}
+    {% set paths = {
+        chevron: '<path d="m6 9 6 6 6-6"/>',
+        star: '<path d="m12 3 2.7 5.47 6.03.88-4.36 4.25 1.03 6-5.4-2.84L6.43 20l1.03-6L3.1 9.35l6.03-.88L12 3Z"/>',
+        clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+        note: '<path d="M6 3.5h9l3 3v14H6z"/><path d="M15 3.5v3h3M9 11h6M9 15h6"/>',
+        bulb: '<path d="M8.5 15.5a6 6 0 1 1 7 0c-1 .7-1.5 1.5-1.5 2.5h-4c0-1-.5-1.8-1.5-2.5Z"/><path d="M10 21h4"/>',
+        documents: '<path d="M7 3.5h8l3 3v12H7z"/><path d="M15 3.5v3h3M4 7v13.5h10"/>'
+    } %}
+    <svg class="{{ className }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{{ paths[name]|raw }}</svg>
+{% endmacro %}

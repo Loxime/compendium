@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fe932d00ab417fb5979cb0ee4d57df7",
+    "content-hash": "3a0eb34b7936c4dda5e6b47f6688e2be",
     "packages": [
         {
             "name": "brick/math",
-            "version": "0.19.1",
+            "version": "0.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "a89bc96a7cf3d7b59e725afe57ccb95eb03cf6ce"
+                "reference": "82944324d1c1bdb2c2618e89978d4e2ad78d69ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/a89bc96a7cf3d7b59e725afe57ccb95eb03cf6ce",
-                "reference": "a89bc96a7cf3d7b59e725afe57ccb95eb03cf6ce",
+                "url": "https://api.github.com/repos/brick/math/zipball/82944324d1c1bdb2c2618e89978d4e2ad78d69ad",
+                "reference": "82944324d1c1bdb2c2618e89978d4e2ad78d69ad",
                 "shasum": ""
             },
             "require": {
@@ -55,7 +55,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.19.1"
+                "source": "https://github.com/brick/math/tree/0.18.0"
             },
             "funding": [
                 {
@@ -63,7 +63,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-08T23:03:16+00:00"
+            "time": "2026-06-14T18:21:03+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -6401,20 +6401,20 @@
         },
         {
             "name": "web-auth/cose-lib",
-            "version": "4.7.0",
+            "version": "4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-auth/cose-lib.git",
-                "reference": "fd965b9a21b5d6e6dffc26eb940817461376a40d"
+                "reference": "3afe04df137baf97c5c3e28c5ee6f05536405148"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/fd965b9a21b5d6e6dffc26eb940817461376a40d",
-                "reference": "fd965b9a21b5d6e6dffc26eb940817461376a40d",
+                "url": "https://api.github.com/repos/web-auth/cose-lib/zipball/3afe04df137baf97c5c3e28c5ee6f05536405148",
+                "reference": "3afe04df137baf97c5c3e28c5ee6f05536405148",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13 || ^0.14 || ^0.15 || ^0.16 || ^0.17 || ^0.18 || ^0.19",
+                "brick/math": "^0.9|^0.10|^0.11|^0.12|^0.13|^0.14|^0.15|^0.16|^0.17|^0.18",
                 "ext-json": "*",
                 "ext-openssl": "*",
                 "php": ">=8.1",
@@ -6456,7 +6456,7 @@
             ],
             "support": {
                 "issues": "https://github.com/web-auth/cose-lib/issues",
-                "source": "https://github.com/web-auth/cose-lib/tree/4.7.0"
+                "source": "https://github.com/web-auth/cose-lib/tree/4.6.0"
             },
             "funding": [
                 {
@@ -6468,7 +6468,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-08-26T11:55:13+00:00"
+            "time": "2026-07-16T10:19:49+00:00"
         },
         {
             "name": "web-auth/webauthn-lib",

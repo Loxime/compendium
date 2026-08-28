@@ -16,6 +16,7 @@ class User implements UserInterface
     #[ORM\Column(length: 100)] private string $prenom = '';
     #[ORM\Column(length: 100)] private string $nom = '';
     #[ORM\Column(length: 180, unique: true)] private string $email = '';
+    #[ORM\Column(length: 255, unique: true, nullable: true)] private ?string $webauthnUserHandle = null;
     #[ORM\Column(length: 20, nullable: true)] private ?string $codePostal = null;
     #[ORM\Column(type: Types::JSON)] private array $roles = ['ROLE_USER'];
     #[ORM\Column] private \DateTimeImmutable $createdAt;
@@ -31,6 +32,8 @@ class User implements UserInterface
     public function setNom(string $v): static { $this->nom=$v; return $this; }
     public function getEmail(): string { return $this->email; }
     public function setEmail(string $v): static { $this->email=mb_strtolower(trim($v)); return $this; }
+    public function getWebauthnUserHandle(): ?string { return $this->webauthnUserHandle; }
+    public function setWebauthnUserHandle(?string $v): static { $this->webauthnUserHandle=$v; return $this; }
     public function getCodePostal(): ?string { return $this->codePostal; }
     public function setCodePostal(?string $v): static { $this->codePostal=$v; return $this; }
     public function getRoles(): array { $roles=$this->roles; $roles[]='ROLE_USER'; return array_values(array_unique($roles)); }

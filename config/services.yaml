@@ -20,3 +20,12 @@ services:
   App\Command\SeedCommand:
     arguments:
       $kernelEnvironment: '%kernel.environment%'
+
+  App\Security\RegistrationCreationOptionsBuilder:
+    arguments:
+      $profileBuilder: '@app.webauthn.registration_profile_options_builder'
+
+  app.webauthn.registration_profile_options_builder:
+    class: Webauthn\Bundle\CredentialOptionsBuilder\ProfileBasedCreationOptionsBuilder
+    arguments:
+      $profile: default

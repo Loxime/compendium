@@ -8,6 +8,13 @@ final class WebauthnUserEntityRepository implements PublicKeyCredentialUserEntit
 {
     public function __construct(private UserRepository $users){}
     public function findOneByUsername(string $v):?PublicKeyCredentialUserEntity{return $this->convert($this->users->findOneBy(['email'=>mb_strtolower(trim($v))]));}
-    public function findOneByUserHandle(string $v):?PublicKeyCredentialUserEntity{return $this->convert($this->users->find((int)$v));}
-    private function convert(?User $u):?PublicKeyCredentialUserEntity{return $u?new PublicKeyCredentialUserEntity($u->getEmail(),(string)$u->getId(),$u->getPrenom().' '.$u->getNom()):null;}
+    public function findOneByUserHandle(string $v):?PublicKeyCredentialUserEntity{return $this->convert($this->users->findOneBy(['webauthnUserHandle'=>$v]));}
+    private function convert(?User $u):?PublicKeyCredentialUserEntity
+    {
+        if (!$u instanceof User || $u->getWebauthnUserHandle() === null) {
+            return null;
+        }
+
+        return new PublicKeyCredentialUserEntity($u->getEmail(),$u->getWebauthnUserHandle(),$u->getPrenom().' '.$u->getNom());
+    }
 }

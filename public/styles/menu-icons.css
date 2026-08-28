@@ -1,0 +1,5 @@
+.explore summary { display: flex; align-items: center; gap: 7px; }
+.explore-chevron { width: 18px; height: 18px; flex: none; transition: transform .22s ease; }
+.explore[open] .explore-chevron { transform: rotate(180deg); }
+.menu-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+.theme-menu-icon { display: inline-flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; text-align: center; }
