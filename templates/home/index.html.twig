@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block title %}Compendium — Notes, idées et documents{% endblock %}
+{% block body %}
+<section class="hero">
+  <div><span class="eyebrow">RECUEIL DE PROJETS</span><h1>Des idées qui méritent de durer.</h1><p>Publier, organiser, discuter et retrouver des notes et documents dans un espace lisible.</p></div>
+  <form class="search" method="get"><input name="q" value="{{ query }}" placeholder="Rechercher dans Compendium…"><button>Rechercher</button></form>
+</section>
+{% if search_fallback %}<div class="notice">Elasticsearch est momentanément indisponible : la recherche SQL de secours est utilisée.</div>{% endif %}
+{% if featured and query == '' %}
+<section><div class="section-head"><h2>À la une</h2><span>{{ featured|length }}/10</span></div><div class="grid">
+{% for item in featured %}{% if item.publication %}<article class="card featured"><span class="tag">{{ item.publication.type.value }}</span><h3><a href="{{ path('app_publication_show',{id:item.publication.id}) }}">{{ item.publication.titre }}</a></h3><p>{{ item.publication.contenu|striptags|slice(0,180) }}{% if item.publication.contenu|length > 180 %}…{% endif %}</p><div class="meta">{{ item.publication.theme.nom }} · {{ item.publication.langue|upper }}</div></article>{% endif %}{% endfor %}
+</div></section>{% endif %}
+<section><div class="section-head"><h2>{% if query %}Résultats pour “{{ query }}”{% else %}Publications récentes{% endif %}</h2></div><div class="grid">
+{% for publication in publications %}<article class="card"><div class="card-top"><span class="tag">{{ publication.type.value }}</span><span>{{ publication.langue|upper }}</span></div><h3><a href="{{ path('app_publication_show',{id:publication.id}) }}">{{ publication.titre }}</a></h3><p>{{ publication.contenu|striptags|slice(0,180) }}{% if publication.contenu|length > 180 %}…{% endif %}</p><div class="meta"><a href="{{ path('app_theme_show',{slug:publication.theme.slug}) }}">{{ publication.theme.nom }}</a><span>♥ {{ publication.nbLikes }} · ↓ {{ publication.nbDislikes }}</span></div></article>{% else %}<p>Aucune publication trouvée.</p>{% endfor %}
+</div></section>
+<section><div class="section-head"><h2>Explorer par thème</h2></div><div class="chips">{% for theme in themes %}<a class="chip" href="{{ path('app_theme_show',{slug:theme.slug}) }}">{{ theme.nom }}</a>{% endfor %}</div></section>
+{% endblock %}

@@ -1,0 +1,18 @@
+parameters:
+  app.local_admin_email: '%env(LOCAL_ADMIN_EMAIL)%'
+  app.elasticsearch_url: '%env(ELASTICSEARCH_URL)%'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  App\Service\ElasticsearchService:
+    arguments:
+      $baseUrl: '%app.elasticsearch_url%'

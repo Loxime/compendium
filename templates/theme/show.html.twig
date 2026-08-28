@@ -1,0 +1,4 @@
+{% extends 'base.html.twig' %}{% block title %}{{ theme.nom }} — Compendium{% endblock %}{% block body %}
+<section class="hero compact"><div><span class="eyebrow">THÈME</span><h1>{{ theme.nom }}</h1><p>Publications classées dans ce thème.</p></div></section>
+<section class="grid">{% for publication in publications %}<article class="card"><span class="tag">{{ publication.type.value }}</span><h3><a href="{{ path('app_publication_show',{id:publication.id}) }}">{{ publication.titre }}</a></h3><p>{{ publication.contenu|striptags|slice(0,180) }}…</p></article>{% else %}<p>Aucune publication publiée.</p>{% endfor %}</section>
+{% endblock %}

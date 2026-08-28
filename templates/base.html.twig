@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Compendium{% endblock %}</title>
+  <link rel="stylesheet" href="/styles/app.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="{{ path('app_home') }}">Compendium</a>
+  <nav>
+    <a href="{{ path('app_home') }}">Accueil</a>
+    {% if app.user %}<a href="{{ path('app_profile') }}">Profil</a>{% else %}<a href="{{ path('app_login') }}">Connexion</a>{% endif %}
+    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('app_admin') }}">Admin</a>{% endif %}
+    {% if app.user %}<a href="{{ path('app_logout') }}">Déconnexion</a>{% endif %}
+  </nav>
+</header>
+{% for type,messages in app.flashes %}{% for message in messages %}<div class="flash {{ type }}">{{ message }}</div>{% endfor %}{% endfor %}
+<main>{% block body %}{% endblock %}</main>
+<footer><span>Compendium MVP · local-first</span><span>Aucun secret requis pour le mode démonstration.</span></footer>
+</body>
+</html>
