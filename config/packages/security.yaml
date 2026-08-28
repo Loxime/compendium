@@ -12,10 +12,7 @@ security:
     main:
       lazy: true
       provider: app_user_provider
-      login_link:
-        check_route: app_login_check
-        signature_properties: ['id', 'email']
-        lifetime: 600
+      custom_authenticator: App\Security\PasskeyAuthenticator
       logout:
         path: app_logout
         target: app_home

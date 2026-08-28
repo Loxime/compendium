@@ -8,19 +8,19 @@ services:
       APP_DEBUG: "1"
       APP_SECRET: compendium-local-dev-key-not-a-production-secret
       DATABASE_URL: postgresql://compendium:compendium@database:5432/compendium?serverVersion=16&charset=utf8
-      MAILER_DSN: smtp://mailpit:1025
       ELASTICSEARCH_URL: http://elasticsearch:9200
       LOCAL_ADMIN_EMAIL: admin@compendium.local
       GOOGLE_DRIVE_ENABLED: "0"
       DEFAULT_URI: http://localhost:8080
+      WEBAUTHN_RP_ID: localhost
+      WEBAUTHN_RP_NAME: Compendium
+      WEBAUTHN_ORIGIN: http://localhost:8080
     volumes:
       - ./:/var/www/html
       - vendor:/var/www/html/vendor
     depends_on:
       database:
         condition: service_healthy
-      mailpit:
-        condition: service_started
       elasticsearch:
         condition: service_healthy
 
@@ -47,11 +47,6 @@ services:
       interval: 3s
       timeout: 3s
       retries: 20
-
-  mailpit:
-    image: axllent/mailpit:v1.27
-    ports:
-      - "8025:8025"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.4.5

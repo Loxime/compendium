@@ -21,8 +21,9 @@ class User implements UserInterface
     #[ORM\Column] private \DateTimeImmutable $createdAt;
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Avis::class)] private Collection $avis;
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reaction::class)] private Collection $reactions;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: WebauthnCredential::class, cascade: ['remove'], orphanRemoval: true)] private Collection $passkeys;
 
-    public function __construct() { $this->createdAt = new \DateTimeImmutable(); $this->avis = new ArrayCollection(); $this->reactions = new ArrayCollection(); }
+    public function __construct() { $this->createdAt = new \DateTimeImmutable(); $this->avis = new ArrayCollection(); $this->reactions = new ArrayCollection(); $this->passkeys = new ArrayCollection(); }
     public function getId(): ?int { return $this->id; }
     public function getPrenom(): string { return $this->prenom; }
     public function setPrenom(string $v): static { $this->prenom=$v; return $this; }
@@ -35,6 +36,7 @@ class User implements UserInterface
     public function getRoles(): array { $roles=$this->roles; $roles[]='ROLE_USER'; return array_values(array_unique($roles)); }
     public function setRoles(array $roles): static { $this->roles=array_values(array_unique($roles)); return $this; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+    public function getPasskeys(): Collection { return $this->passkeys; }
     public function getUserIdentifier(): string { return $this->email; }
     public function eraseCredentials(): void {}
 }

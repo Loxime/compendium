@@ -16,3 +16,7 @@ services:
   App\Service\ElasticsearchService:
     arguments:
       $baseUrl: '%app.elasticsearch_url%'
+
+  App\Command\SeedCommand:
+    arguments:
+      $kernelEnvironment: '%kernel.environment%'

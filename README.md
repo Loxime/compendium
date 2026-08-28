@@ -1,174 +1,101 @@
-# Compendium — MVP local Docker
+# Compendium
 
-Compendium est une plateforme de publication et d'archivage de notes, idées et documents. Ce dépôt contient un **MVP local** conçu pour être lancé avec Docker Compose et testé avant le premier commit public.
+Compendium est une bibliothèque personnelle publique pour publier des notes, des idées et des documents longs. Stack : PHP 8.4, Symfony 8.1, Doctrine/PostgreSQL 16, Twig, Elasticsearch et WebAuthn.
 
-## Fonctionnalités incluses
+## Installation locale
 
-- Symfony 8.1 + Twig
-- PostgreSQL 16
-- Elasticsearch 9.4.5 avec recherche full-text et fallback SQL
-- Mailpit pour tester les liens magiques sans envoyer d'e-mail réel
-- Publications : note / idée / document, brouillon / publié / archivé
-- Thèmes administrables
-- À la une (1 à 10 positions)
-- Likes / dislikes uniques par utilisateur
-- Avis ; après suppression d'un compte, l'avis reste sous `[user_deleted]`
-- Suppression de compte en hard delete
-- Admin local créé automatiquement
-- Simulateur Google Drive : ajout/modification d'un document avec retour automatique au statut brouillon
-- Endpoint de santé `/health`
-
-> La synchronisation Google Drive réelle n'est volontairement **pas activée** dans ce premier ZIP : elle nécessite des identifiants Google. Aucun identifiant externe n'est fourni ou attendu pour tester le MVP.
-
-## Prérequis
-
-- Docker
-- Docker Compose v2 (`docker compose`)
-- Environ 2 Go de RAM disponible pour la stack locale (Elasticsearch utilise 512 Mo de heap dans cette configuration)
-
-## Démarrage
+Prérequis : Docker avec Compose.
 
 ```bash
-unzip compendium-mvp.zip
-cd compendium-mvp
-docker compose up --build -d
+cp .env.example .env.local
+docker compose up --build
 ```
 
-Vérifier ensuite :
+Application : <http://localhost:8080>. Santé : <http://localhost:8080/health>. Les seuls services sont ``php``, ``nginx``, ``database`` et ``elasticsearch``. Aucune infrastructure SMTP n’est requise et Elasticsearch n’est pas publié sur l’hôte.
 
-```bash
-docker compose ps
-curl http://localhost:8080/health
-```
+## Passkeys
 
-Accès locaux :
+Il n’existe ni mot de passe, ni code ou lien envoyé par e-mail. L’inscription recueille prénom, nom, e-mail unique et code postal facultatif, puis le navigateur crée une passkey. La connexion est validée par ``web-auth/webauthn-symfony-bundle``.
 
-- Application : `http://localhost:8080`
-- Mailpit : `http://localhost:8025`
-- Elasticsearch : `http://localhost:9200`
-
-## Connexion administrateur locale
-
-Un compte de démonstration est créé au premier démarrage :
-
-```text
-admin@compendium.local
-```
-
-1. Ouvrir `http://localhost:8080/connexion`.
-2. Saisir `admin@compendium.local`.
-3. Cliquer sur « Recevoir mon lien ».
-4. Ouvrir Mailpit sur `http://localhost:8025`.
-5. Ouvrir le message reçu puis le lien magique.
-6. Le menu **Admin** devient accessible.
-
-Il n'y a aucun mot de passe de démonstration.
-
-## Parcours de test conseillé
-
-1. Vérifier les publications de démonstration sur l'accueil.
-2. Effectuer une recherche (`architecture`, `plateforme`, etc.).
-3. Se connecter avec le compte admin via Mailpit.
-4. Créer un thème.
-5. Créer une publication en brouillon puis la publier.
-6. Ajouter la publication à la une.
-7. Créer un second compte avec une adresse fictive et son lien Mailpit.
-8. Tester like, dislike, changement d'avis et suppression de réaction.
-9. Ajouter un avis.
-10. Supprimer le second compte : l'avis doit afficher `[user_deleted]`.
-11. Dans **Admin > Drive**, simuler deux imports avec le même `drive_file_id` : la publication concernée doit rester/repasser en brouillon.
-
-## Commandes utiles
-
-```bash
-# Logs
-docker compose logs -f php nginx
-
-# Validation du schéma Doctrine
-docker compose exec php php bin/console doctrine:schema:validate
-
-# Voir les routes
-docker compose exec php php bin/console debug:router
-
-# Réindexer Elasticsearch
-docker compose exec php php bin/console app:search:reindex
-
-# Promouvoir manuellement un compte
-docker compose exec php php bin/console app:user:promote-admin user@example.com
-
-# Test HTTP automatique
-./scripts/smoke.sh
-
-# Arrêter
-docker compose down
-
-# Reset complet des données locales
-docker compose down -v
-```
-
-## Avant le premier commit public
-
-Le dépôt GitHub cible est public. Les règles suivantes sont obligatoires :
-
-- ne jamais committer `.env.local` ni `.env.*.local` ;
-- ne jamais committer de clé Google, token OAuth, webhook secret, mot de passe réel, clé API ou certificat privé ;
-- conserver uniquement des valeurs locales factices dans `.env` / `compose.yaml` ;
-- stocker les futurs secrets de développement dans `.env.local`, déjà ignoré par Git ;
-- en CI/production, utiliser les **GitHub Actions Secrets** ou le gestionnaire de secrets de l'hébergeur ;
-- contrôler le diff avant chaque push.
-
-Commande de contrôle rapide :
-
-```bash
-git status
-git diff --cached
-```
-
-Le projet est fourni sans `composer.lock`, car le ZIP est construit hors réseau. Après le premier démarrage réussi et **avant le premier commit**, générer le lock depuis le conteneur :
-
-```bash
-docker compose exec php composer update --lock --no-install
-```
-
-Puis vérifier qu'il ne contient évidemment aucun secret (un `composer.lock` normal ne doit contenir que des métadonnées de dépendances).
-
-## Google Drive réel — étape suivante
-
-Quand le MVP local sera validé, la vraie intégration Drive pourra être ajoutée. Les valeurs devront rester uniquement dans `.env.local` :
+Local :
 
 ```dotenv
-GOOGLE_DRIVE_ENABLED=1
-GOOGLE_DRIVE_CLIENT_ID=...
-GOOGLE_DRIVE_CLIENT_SECRET=...
-GOOGLE_DRIVE_FOLDER_ID=...
+WEBAUTHN_RP_ID=localhost
+WEBAUTHN_RP_NAME=Compendium
+WEBAUTHN_ORIGIN=http://localhost:8080
 ```
 
-Le fichier `.env.local` ne doit jamais être ajouté à Git.
+Production :
+
+```dotenv
+WEBAUTHN_RP_ID=falchero.fr
+WEBAUTHN_RP_NAME=Compendium
+WEBAUTHN_ORIGIN=https://falchero.fr
+```
+
+Une passkey est liée au RP ID. WebAuthn requiert HTTPS hors ``localhost``.
+
+## Administration
+
+La création d’un compte attribue uniquement ``ROLE_USER``. La promotion reste exclusivement en ligne de commande :
+
+```bash
+docker compose exec php php bin/console app:user:promote-admin utilisateur@example.fr
+```
+
+L’administration gère publications, thèmes, ordre de la une (maximum dix) et brouillons Drive.
+
+## Recherche, langues et formats
+
+Elasticsearch indexe le titre, le texte nettoyé, le thème, la langue et le type des seules publications publiées. Une recherche SQL dégradée prend le relais si nécessaire.
+
+Les traductions sont des publications autonomes partageant un ``groupeTraductionId``. Aucune traduction n’est générée. Les formats ``texte_brut``, ``html_drive`` et ``editorjs_json`` sont isolés par ``ContentTextExtractor``. Editor.js n’est pas présenté comme actif : son éditeur et son renderer structuré restent une étape ultérieure.
+
+## Google Drive optionnel
+
+```dotenv
+GOOGLE_DRIVE_ENABLED=0
+GOOGLE_DRIVE_CLIENT_ID=
+GOOGLE_DRIVE_CLIENT_SECRET=
+GOOGLE_DRIVE_FOLDER_ID=
+```
+
+Avec Drive désactivé, tout le site fonctionne. Les secrets vont uniquement dans ``.env.local`` ou le fichier externe de production. Le MVP fournit un cycle administré vers un brouillon, jamais une publication automatique ni une synchronisation temps réel.
+
+## Migrations et production
+
+```bash
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+``app:seed`` est réservé au développement et refuse ``APP_ENV=prod``.
+
+``compose.prod.yaml`` construit ``docker/php/Dockerfile.prod``, charge les secrets depuis ``/etc/compendium/compendium.env``, n’expose que Nginx sur ``127.0.0.1:3031`` et garde PostgreSQL/Elasticsearch privés.
+
+```bash
+docker compose -f compose.prod.yaml up -d --build
+```
+
+Le fichier externe définit au minimum ``APP_SECRET``, ``DATABASE_URL``, ``POSTGRES_DB``, ``POSTGRES_USER``, ``POSTGRES_PASSWORD``, ``ELASTICSEARCH_URL`` et les variables ``WEBAUTHN_*``. L’entrypoint applique les migrations, échoue avec elles et ne lance jamais les seeds.
+
+## Vérifications
+
+```bash
+composer validate
+find src tests migrations -name '*.php' -print0 | xargs -0 -n1 php -l
+php bin/console lint:twig templates
+php bin/console lint:yaml config compose.yaml compose.prod.yaml
+php bin/console doctrine:schema:validate
+php bin/phpunit
+./scripts/smoke.sh
+./scripts/security-check.sh
+```
 
 ## Architecture
 
-```text
-src/
-├── Command/       # seed, promotion admin, réindexation
-├── Controller/    # public, sécurité, profil et admin
-├── Entity/        # modèle Doctrine
-├── Enum/          # types/statuts/sources/réactions
-├── Repository/
-└── Service/       # extraction texte, Elasticsearch, état Drive
-
-docker/
-├── nginx/
-└── php/
-
-migrations/        # schéma PostgreSQL initial
-templates/         # Twig
-public/styles/     # UI du MVP
-```
-
-## Limites assumées de ce premier MVP
-
-- l'éditeur riche Editor.js n'est pas encore intégré ; l'admin utilise un textarea pour fiabiliser le premier test ;
-- le rendu `html_drive` est échappé côté public pour éviter toute injection HTML tant qu'un sanitizer n'est pas ajouté ;
-- l'intégration Google Drive réelle (OAuth/API `changes.watch`) est remplacée par un simulateur de cycle métier ;
-- le multilingue complet et son écran de fallback restent V2, conformément au cahier des charges ;
-- aucune donnée de démonstration n'est destinée à la production.
+- ``src/Entity`` : modèle métier et credentials WebAuthn multiples.
+- ``src/Security`` : cérémonies passkey sans cryptographie maison.
+- ``src/Service`` : extraction de texte, Elasticsearch et état Drive.
+- ``src/Controller`` : public, profil, santé et administration.
+- ``templates`` / ``public`` : interface éditoriale et adaptation WebAuthn navigateur.
+- ``migrations`` : historique SQL immuable.

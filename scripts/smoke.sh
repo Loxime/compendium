@@ -9,5 +9,3 @@ printf 'Login page... '
 curl -fsS "$BASE_URL/connexion" >/dev/null && echo OK
 printf 'Elasticsearch... '
 docker compose exec -T elasticsearch curl -fsS http://localhost:9200/_cluster/health >/dev/null && echo OK
-printf 'Mailpit... '
-curl -fsS http://localhost:8025/api/v1/info >/dev/null && echo OK
